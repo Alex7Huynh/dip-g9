@@ -1,0 +1,10 @@
+﻿Tài liệu cần nhưng chưa download được:
+- [Paper] Fast 3D image depth map estimation using wavelet analysis (http://ieeexplore.ieee.org/xpl/login.jsp?tp=&arnumber=5685211)
+
+Ghi chú:
+- Trước khi up tài liệu lên nhớ đọc sơ qua và đổi tên file.
+- Khi up mã nguồn nhớ ghi lại link đã download trong +Link.txt.
+- Trong quá trình làm có gặp bế tắc vui lòng:
+	+ liên hệ nhóm trưởng để trao đổi
+	+ lên group Skype thảo luận
+	+ tránh để đến cuối kỳ không hoàn thành được
