@@ -1,6 +1,0 @@
-Dự kiến chia làm 4 nhóm nhỏ
-
-1 - Tìm kiếm dữ liệu (nên chia dữ liệu thành 3 loại: RGB, Depth(nên chọn đen trắng) và RGB depth) + tìm kiếm ứng dụng (nếu dc, nên chia 3 loại, ko thì cũng nên RGB Depth) : một vài soft tiêu biểu (số ng dự kiến 1-2)
-2 - Wavelet trên RGB (số ng dự kiến 1)
-3 - Wavelet trên depth (số ng dự kiến 1)
-4 - Wavelet trên RGB - depth (số ng dự kiến 2 )

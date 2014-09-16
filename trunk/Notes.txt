@@ -8,3 +8,19 @@ Ghi chú:
 	+ liên hệ nhóm trưởng để trao đổi
 	+ lên group Skype thảo luận
 	+ tránh để đến cuối kỳ không hoàn thành được
+
+I. Giới thiệu
+- Biến đổi Fourier
+- Tổng quan wavelet
+- Các loại wavelet
+
+II. Wavelet trên ảnh màu RGB
+1. Biến đổi wavelet rời rạc
+2. Biến đổi wavelet liên tục
+3. Biến đổi wavelet phức
+4. Biến đổi wavelet nhanh
+
+VI. Viết ứng dụng wavelet (C++, MatLab,...)
+- Tìm dữ liệu, thư viện hỗ trợ
+- Nén ảnh
+- Khử nhiễu
