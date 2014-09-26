@@ -1,0 +1,19 @@
+﻿Các tài liệu giáo sư Fukuzawa cung cấp
+https://www.dropbox.com/sh/cq7a15whaurlg1s/AABpcnRSRaOu0GiZF6PMAwJza?dl=0
+- Slide bài giảng: chỉ có 2 buổi đầu.
+- C++Samples: đã tích hợp vào project.
+- FilterImages: hình mẫu, do kích thước lớn nên up lên dropbox.
+
+Tài liệu cần nộp:
+1- Báo cáo về buổi Workshop (doc).
+. Kiến thức
+. Trải nghiệm
+. Kết quả thu được
+2. Slide (trình bày kết quả tại buổi cuối)
+3. Chương trình
+. Source code
+. CT thực thi
+. Mẫu thử nghiệm gốc + mẫu kết quả qua các giai đoạn
+Chú ý:
+- Các nhóm có giải thưởng nhớ ghi chú thêm vào báo cáo.
+- Nhớ ghi tên các thành viên trong nhóm tham gia Workshop.
