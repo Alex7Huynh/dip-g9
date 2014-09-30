@@ -81,10 +81,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Smoothing.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Smoothing.h" />
     <ClInclude Include="Threshold.h" />
+    <ClInclude Include="MyFunction.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

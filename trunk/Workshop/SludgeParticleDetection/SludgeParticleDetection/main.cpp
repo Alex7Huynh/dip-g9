@@ -1,126 +1,75 @@
 #include "Threshold.h"
-#include "opencv2/imgproc/imgproc.hpp"
-#include "opencv2/highgui/highgui.hpp"
-#include "opencv2/features2d/features2d.hpp"
-#include <stdlib.h>
-#include <stdio.h>
-#include <iostream>
-#include <vector>
-using namespace std;
-using namespace cv;
-
-// Laplace
-Mat Laplace(char * srcImage);
-// Sobel
-Mat Sobel(char * srcImage);
-// Smoothing
-int display_caption( const char* caption );
-int display_dst( int delay );
-
-/// Global variables
+#include "Smoothing.h"
 
 void main()
-{	
-    Mat dst;
+{
+	/*AutoDisplay("lena.png");
+	return;*/
+	
 	char* filename;
 	filename = new char[100];
-	bool bInput = true;
-	
+	bool bInput = true;	
+
+	/// Load the source image
 	if(bInput) {
-		cout << "Enter image's filename (e.g. P4N.bmp): ";
+		cout << "Enter image's filename (e.g. F2_P1N.bmp): ";
 		cin >> filename;
 		cout << filename;
 	} else {
-		filename = "P4N.bmp";
+		filename = "F4_P1N.bmp";
 	}
+
+	namedWindow( "Original", WINDOW_NORMAL);
+	namedWindow( "Result", WINDOW_NORMAL);
 
 	if (src.empty())
 		src = imread( filename, 1 );
-
-	//dst = Laplace(filename);	// apply Laplace
-	//dst = Sobel(filename);	// apply Sobel
 	
-	//Threshold(filename);
+	//Threshold(filename);	// Run threshold demo
+	//Smoothing(filename);	// Run smoothing demo
 
+	/// Apply Laplace
+	//dst = Laplace(filename);
+
+	/// Apply Sobel
+	//dst = Sobel(filename);	
+
+	/// Enhance contrast: alpha value [1.0-3.0], beta value [0-100]
+	//src.convertTo(dst, -1, 1.2, 50);
+
+	/// Convert to grayscale
 	cvtColor( src, src_gray, COLOR_RGB2GRAY );
-	threshold( src_gray, dst, 80, max_BINARY_value, 1 );
-
 	
-    imshow( "Sludge Particles Detection", dst );
+	/// Apply Histogram Equalization
+	Mat dst;
+	equalizeHist(src_gray, dst);
+	
+	/// Apply erosion
+	Mat dstErosed;
+	int erosion_size = 3;
+	int erosion_type = MORPH_RECT;
+	Mat element = getStructuringElement( erosion_type, Size( 2*erosion_size + 1, 2*erosion_size+1 ), Point( erosion_size, erosion_size ) );
+	erode( dst, dstErosed, element );
+
+	/// Apply threshold
+	Mat dstThreshold;
+	threshold( dstErosed, dstThreshold, 80, max_BINARY_value, 1 );
+
+	/// Invert color
+	Mat dstInvert;
+	bitwise_not (dst, dstInvert);
+
+	/// Canny edge detection
+	Mat dstCanny;
+	dstCanny = CannyThreshold(0, 0, src, dstInvert);
+
+	/// Find contours
+	Mat dstContours;
+	dstContours = thresh_callback( 0, 0, dstCanny);
+
+    imshow( "Original", src);
+	imshow( "Result", dstCanny);
+
+	//DisplayCaption( "End: Press a key!", dst);
     waitKey(0);
-}
-
-Mat Laplace(char * srcImage)
-{
-    Mat src, src_gray, dst;
-	Mat abs_dst;
-
-    int kernel_size = 3;
-    int scale = 1;
-    int delta = 0;
-    int ddepth = CV_16S;    
-	const char* window_name = "Laplace Demo";
-    /// Load an image
-    //src = imread( "P4N.bmp" );
-	src = imread( srcImage );
-
-    if ( !src.data )
-        return abs_dst;
-
-    /// Remove noise by blurring with a Gaussian filter
-    GaussianBlur( src, src, Size(3,3), 0, 0, BORDER_DEFAULT );
-
-    /// Convert the image to grayscale
-    cvtColor( src, src_gray, COLOR_RGB2GRAY );
-
-    /// Create window
-    //namedWindow( window_name, WINDOW_AUTOSIZE );
-
-    /// Apply Laplace function
-    Laplacian( src_gray, dst, ddepth, kernel_size, scale, delta, BORDER_DEFAULT );
-	convertScaleAbs( dst, abs_dst );
-
-	return abs_dst;
-}
-Mat Sobel(char * srcImage)
-{
-    Mat src, src_gray;
-    Mat grad;
-    const char* window_name = "Sobel Demo - Simple Edge Detector";
-    int scale = 1;
-    int delta = 0;
-    int ddepth = CV_16S;
-
-    /// Load an image
-    src = imread(srcImage);
-
-    if ( !src.data )
-    {        return grad;    }
-
-    GaussianBlur( src, src, Size(3,3), 0, 0, BORDER_DEFAULT );
-
-    /// Convert it to gray
-    cvtColor( src, src_gray, COLOR_RGB2GRAY );
-
-    /// Create window
-    //namedWindow( window_name, WINDOW_AUTOSIZE );
-
-    /// Generate grad_x and grad_y
-    Mat grad_x, grad_y;
-    Mat abs_grad_x, abs_grad_y;
-
-    /// Gradient X
-    //Scharr( src_gray, grad_x, ddepth, 1, 0, scale, delta, BORDER_DEFAULT );
-    Sobel( src_gray, grad_x, ddepth, 1, 0, 3, scale, delta, BORDER_DEFAULT );
-    convertScaleAbs( grad_x, abs_grad_x );
-
-    /// Gradient Y
-    //Scharr( src_gray, grad_y, ddepth, 0, 1, scale, delta, BORDER_DEFAULT );
-    Sobel( src_gray, grad_y, ddepth, 0, 1, 3, scale, delta, BORDER_DEFAULT );
-    convertScaleAbs( grad_y, abs_grad_y );
-
-    /// Total Gradient (approximate)
-    addWeighted( abs_grad_x, 0.5, abs_grad_y, 0.5, 0, grad );
-
-    return grad;
 }
