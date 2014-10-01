@@ -6,14 +6,6 @@
 
 using namespace cv;
 
-/// Global variables
-
-int threshold_value = 0;
-int threshold_type = 3;
-int const max_value = 255;
-int const max_type = 4;
-int const max_BINARY_value = 255;
-
 Mat src, src_gray, dst;
 //const char* window_name = "Threshold Demo";
 

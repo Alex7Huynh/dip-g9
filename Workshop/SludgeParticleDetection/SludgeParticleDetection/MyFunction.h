@@ -14,6 +14,12 @@ int DELAY_CAPTION = 1500;
 int DELAY_BLUR = 100;
 int MAX_KERNEL_LENGTH = 31;
 
+int threshold_value = 0;
+int threshold_type = 3;
+int const max_value = 255;
+int const max_type = 4;
+int const max_BINARY_value = 255;
+
 Mat Laplace(char * srcImage)
 {
     Mat src, src_gray, dst;
@@ -151,6 +157,41 @@ int DisplayImg( int delay, Mat img)
 	int c = waitKey ( delay );
 	if( c >= 0 ) { return -1; }
 	return 0;
+}
+Mat Transform7Steps(Mat src)
+{
+	/// Convert to grayscale
+	Mat src_gray;
+	cvtColor( src, src_gray, COLOR_RGB2GRAY );
+	
+	/// Apply Histogram Equalization
+	Mat dst;
+	equalizeHist(src_gray, dst);
+	
+	/// Apply erosion
+	Mat dstErosed;
+	int erosion_size = 3;
+	int erosion_type = MORPH_RECT;
+	Mat element = getStructuringElement( erosion_type, Size( 2*erosion_size + 1, 2*erosion_size+1 ), Point( erosion_size, erosion_size ) );
+	erode( dst, dstErosed, element );
+
+	/// Apply threshold
+	Mat dstThreshold;
+	threshold( dstErosed, dstThreshold, 80, max_BINARY_value, 1 );
+
+	/// Invert color
+	Mat dstInvert;
+	bitwise_not (dst, dstInvert);
+
+	/// Canny edge detection
+	Mat dstCanny;
+	dstCanny = CannyThreshold(0, 0, src, dstInvert);
+
+	/// Find contours
+	Mat dstContours;
+	dstContours = thresh_callback( 0, 0, dstCanny);
+
+	return dstContours;
 }
 void AutoDisplay(char* filename)
 {
