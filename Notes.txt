@@ -26,14 +26,27 @@ Ghi chú:
 	+ tránh để đến cuối kỳ không hoàn thành được
 
 
-I. Giới thiệu [Toàn]
+Nhận xét của thầy trong buổi đầu với các nhóm:
+1. Cần phát biểu bài toán cùng với giải pháp.
+2. Thống kê các phương pháp.
+3. Cách tạo nhiễu như thế nào, dùng hàm thư viện nào?
+4. Chú trọng vào giải thuật và ứng dụng, cài đặt như thế nào? test thế nào?
+5. Ghi lại định nghĩa cơ bản.
+6. Ví dụ về ứng dụng cần đến đề tài.
+7. Tại sao lại dùng hàm (sigmoid)? Vì sao không dùng hàm khác?
+8. Nhấn mạnh vào điểm mạnh, hữu ích, output ra là gì, đem lại hiệu quả gì? triển vọng?
+9. Khi nào dùng cái cũ (Fourier), khi nào dùng cái mới (wavelet)?
+10. Hạn chế của phương pháp (wavelet)?
+11. Cho ví dụ cụ thể của từng phương pháp trình bày.
 
+
+Phân công sơ lược:
+I. Giới thiệu [Toàn]
 II. Wavelet trên ảnh màu RGB
 1. Biến đổi wavelet rời rạc [ĐMinh]
 2. Biến đổi wavelet liên tục [ĐMinh]
 3. Biến đổi wavelet phức [QMinh]
 4. Biến đổi wavelet nhanh [QMinh]
-
 VI. Viết ứng dụng wavelet (C++, MatLab,...) [Long+Tấn]
 - Tìm dữ liệu, thư viện hỗ trợ
 - Nén ảnh
