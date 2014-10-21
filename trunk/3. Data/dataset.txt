@@ -1,0 +1,6 @@
+1. "Standard" test images
+	http://www.imageprocessingplace.com/root_files_V3/image_databases.htm
+2. IEEE International Conference on Robotics and Automation (ICRA) 
+	http://rgbd-dataset.cs.washington.edu
+3. VOCB3DO, Berkeley 3-D Object Dataset
+	http://kinectdata.com
