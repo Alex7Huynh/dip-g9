@@ -4,3 +4,5 @@
 	http://rgbd-dataset.cs.washington.edu
 3. VOCB3DO, Berkeley 3-D Object Dataset
 	http://kinectdata.com
+4. NYU Depth Dataset V2
+	http://cs.nyu.edu/~silberman/datasets/nyu_depth_v2.html

@@ -1,1 +1,0 @@
-http://rgbd-dataset.cs.washington.edu/dataset/rgbd-scenes-v2/
