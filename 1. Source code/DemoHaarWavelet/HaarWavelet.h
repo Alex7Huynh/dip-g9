@@ -44,7 +44,7 @@ private:
 	void IWT(double* inoutData, int inLength);
 	void IWT(double** inoutData, int inWidth, int inHeight);
 
-	void ApplyHaarTransform(bool inIsForward);
+	void ApplyHaarTransform(bool inIsForward, bool isDisplayImage);
 
 	// Methods for denoising
 	void HaarDecomposeArray(float *A, int width);
@@ -55,8 +55,12 @@ private:
 	static void OnTrackbar(int, void*);
 	void CHaarWavelet::Denoise(const cv::Mat &input, cv::Mat &output, float threshold);
 
+	static int getFileSize(CString inFilePath);
+
 public:
-	void RunHaarTransform(CString inFilePath, int inIterations);
+	void RunHaarTransform(CString inFilePath, int inIterations, bool isDisplayImage = true);
 	void Denoise(CString inFilePath);
+
+	void RunHaarTransformAutoMode(const CStringArray& inFilePaths, const CString& inOutFolder);
 };
 

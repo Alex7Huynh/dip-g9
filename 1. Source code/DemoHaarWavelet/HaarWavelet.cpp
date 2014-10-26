@@ -156,7 +156,7 @@ void CHaarWavelet::IWT(double** inoutData, int inWidth, int inHeight)
 	delete []col;
 }
 
-void CHaarWavelet::ApplyHaarTransform(bool inIsForward)
+void CHaarWavelet::ApplyHaarTransform(bool inIsForward, bool isDisplayImage)
 {
 	cv::Mat bmp = inIsForward ? m_OriginalImage.clone() : m_ForwardImage.clone();
 
@@ -183,7 +183,7 @@ void CHaarWavelet::ApplyHaarTransform(bool inIsForward)
 			try {
 				tmp = bmp.at<cv::Vec3b>(cv::Point(i, j));
 			} catch(...) {
-				MessageBox(NULL, "Something is not right! Please retry!", "Error", 0);
+				MessageBox(NULL, L"Something is not right! Please retry!", L"Error", 0);
 				return;
 			}
 
@@ -239,30 +239,38 @@ void CHaarWavelet::ApplyHaarTransform(bool inIsForward)
 		m_ForwardImage = bmp;
 
 		// Show image and save to file
-		cv::namedWindow("FWT", 1);
-		cv::imshow("FWT", bmp);
-		cv::imwrite("E:\\tan1.jpg", bmp);
+		if (isDisplayImage) {
+			cv::namedWindow("FWT", 1);
+			cv::imshow("FWT", bmp);
+			//cv::imwrite("E:\\tan1.jpg", bmp);
+		}
 	}
 	else {
 		// Backup image
 		m_InvertImage = bmp;
 
-		// Show image and save to file
-		cv::namedWindow("IWT", 1);
-		cv::imshow("IWT", bmp);
-		cv::imwrite("E:\\tan2.png", bmp);
+		if (isDisplayImage) {
+			// Show image and save to file
+			cv::namedWindow("IWT", 1);
+			cv::imshow("IWT", bmp);
+			//cv::imwrite("E:\\tan2.png", bmp);
+		}
 	}
 
 	bmp.release();
 }
 
 
-void CHaarWavelet::RunHaarTransform(CString inFilePath, int inIterations)
+void CHaarWavelet::RunHaarTransform(CString inFilePath, int inIterations, bool isDisplayImage)
 {
 	// Try to open image file
-	m_OriginalImage = cv::imread(inFilePath.GetString());
+	char tmp[1024] = { 0 };
+	wcstombs(tmp, inFilePath.GetString(), 1023);
+	//m_OriginalImage = cv::imread(inFilePath.GetString());
+	m_OriginalImage = cv::imread(tmp);
+
 	if (!m_OriginalImage.data) {
-		MessageBox(NULL, "Can't read image file! Please recheck.", "Error", 0);
+		MessageBox(NULL, L"Can't read image file! Please recheck.", L"Error", 0);
 		return;
 	}
 
@@ -271,16 +279,16 @@ void CHaarWavelet::RunHaarTransform(CString inFilePath, int inIterations)
 	int maxScale = (int)(log(MAX(m_OriginalImage.rows, m_OriginalImage.cols) * 1.0) / log(2.0));
 	if (m_Iteration < 1 || m_Iteration > maxScale)
 	{
-		char msg[1024] = { 0 };
-		_snprintf_s(msg, _TRUNCATE, "With input image, the Iteration should be in range 1 to %d", maxScale);
-		MessageBox(NULL, msg, "Error", 0);
+		wchar_t msg[1024] = { 0 };
+		_wprintf_p(msg, _TRUNCATE, "With input image, the Iteration should be in range 1 to %d", maxScale);
+		MessageBox(NULL, msg, L"Error", 0);
 		return;
 	}
 
 	// Forward
-	ApplyHaarTransform(true);
+	ApplyHaarTransform(true, isDisplayImage);
 	// Invert
-	ApplyHaarTransform(false);
+	ApplyHaarTransform(false, isDisplayImage);
 
 	// Write image to file
 	CString outFileName= inFilePath.Mid(inFilePath.ReverseFind('\\')+1);
@@ -408,9 +416,11 @@ void CHaarWavelet::Denoise(CString inFilePath)
 	}
 
 	// Try to open image file
-	m_OriginalImage = cv::imread(inFilePath.GetString());
+	char tmp[1024] = { 0 };
+	wcstombs(tmp, inFilePath.GetString(), 1023);
+	m_OriginalImage = cv::imread(tmp);
 	if (!m_OriginalImage.data) {
-		MessageBox(NULL, "Can't read image file! Please recheck.", "Error", 0);
+		MessageBox(NULL, L"Can't read image file! Please recheck.", L"Error", 0);
 		return;
 	}
 
@@ -474,4 +484,72 @@ void CHaarWavelet::Denoise(const cv::Mat &input, cv::Mat &output, float threshol
 	HaarReconstructImage((float*)output.data, output.rows, output.cols);
 
 	output.convertTo(output, CV_8U);
+}
+
+void CHaarWavelet::RunHaarTransformAutoMode(const CStringArray& inFilePaths, const CString& inOutFolder)
+{
+	// Prepare output file path
+	CString outputFilePath = inOutFolder + "\\results.csv";
+	CFile result(outputFilePath, CFile::modeCreate | CFile::modeWrite);
+
+	for (int i = 0; i < inFilePaths.GetSize(); ++i) {
+		CString filePath = inFilePaths.GetAt(i);
+		// Try to open image file
+		char tmp[1024] = { 0 };
+		wcstombs(tmp, filePath.GetString(), 1023);
+		m_OriginalImage = cv::imread(tmp);
+		if (!m_OriginalImage.data) {
+			continue;
+		}
+
+		// Check iterations
+		int maxScale = (int)(log(MAX(m_OriginalImage.rows, m_OriginalImage.cols) * 1.0) / log(2.0));
+		for (int iteration = 1; iteration <= maxScale && iteration <= 3; ++iteration) {
+			m_Iteration = iteration;
+
+			// Forward
+			ApplyHaarTransform(true, false);
+			// Invert
+			ApplyHaarTransform(false, false);
+
+			// Write image to file
+			CString outFileName= filePath.Mid(filePath.ReverseFind('\\')+1);
+			CString ext = outFileName.Mid(outFileName.ReverseFind('.') + 1);
+			CString outName = outFileName.Mid(0, outFileName.GetLength() - ext.GetLength() - 1);
+
+			wchar_t outForwardFilePath[256] = { 0 };
+			_snwprintf_s(outForwardFilePath, _TRUNCATE, L"%s\\%s_%d_F.%s", inOutFolder.GetString(), outName, m_Iteration ,ext);
+			char tmp1[1024] = { 0 };
+			wcstombs(tmp1, outForwardFilePath, 1023);
+			cv::imwrite(tmp1, m_ForwardImage);
+
+			wchar_t outInvertFilePath[256] = { 0 };
+			_snwprintf_s(outInvertFilePath, _TRUNCATE, L"%s\\%s_%d_I.%s", inOutFolder.GetString(), outName, m_Iteration ,ext);
+			wcstombs(tmp1, outInvertFilePath, 1023);
+			cv::imwrite(tmp1, m_InvertImage);
+
+			//m_OriginalImage.release();
+			m_ForwardImage.release();
+			m_InvertImage.release();
+
+			// Get File size and write to output file.
+			CFileStatus fileStatus;
+			CFile::GetStatus(filePath, fileStatus);
+			double sizeInputInKBs = fileStatus.m_size / 1024;
+			CFile::GetStatus(outForwardFilePath, fileStatus);
+			double sizeForwardInKBs = fileStatus.m_size / 1024;
+			CFile::GetStatus(outInvertFilePath, fileStatus);
+			double sizeInvertInKBs = fileStatus.m_size / 1024;
+
+			wchar_t data[1024] = { 0 };
+			_snwprintf_s(data, _TRUNCATE, L"%s,%f,%s,%f,%s,%f\n", filePath.GetString(), sizeInputInKBs, outForwardFilePath, sizeForwardInKBs, outInvertFilePath, sizeInvertInKBs);
+			wcstombs(tmp1, data, 1023);
+
+			result.Write(tmp1, strlen(tmp1) + 1);
+		}
+
+		m_OriginalImage.release();
+	}
+
+	result.Close();
 }
