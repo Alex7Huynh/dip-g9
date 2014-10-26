@@ -6,13 +6,15 @@
 #include "DemoHaarWavelet.h"
 #include "DemoHaarWaveletDlg.h"
 #include "afxdialogex.h"
-
+#include <afx.h>
 #include "HaarWavelet.h"
+#include "afxcmn.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
 
+CDemoHaarWaveletDlg* sHaarWaveletDlg = NULL;
 
 // CAboutDlg dialog used for App About
 
@@ -53,6 +55,7 @@ END_MESSAGE_MAP()
 CDemoHaarWaveletDlg::CDemoHaarWaveletDlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CDemoHaarWaveletDlg::IDD, pParent)
 {
+	sHaarWaveletDlg = this;
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
 
@@ -61,6 +64,7 @@ void CDemoHaarWaveletDlg::DoDataExchange(CDataExchange* pDX)
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_EB_IMAGE_PATH, m_imagePath);
 	DDX_Control(pDX, IDC_EB_Iteration, m_iterations);
+	DDX_Control(pDX, IDC_PROGRESS, m_progressBar);
 }
 
 BEGIN_MESSAGE_MAP(CDemoHaarWaveletDlg, CDialogEx)
@@ -71,6 +75,7 @@ BEGIN_MESSAGE_MAP(CDemoHaarWaveletDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BN_OPEN_FILE, &CDemoHaarWaveletDlg::OnBnClickedBnOpenFile)
 	ON_BN_CLICKED(IDC_BN_DENOISING, &CDemoHaarWaveletDlg::OnBnClickedBnDenoising)
 	ON_BN_CLICKED(IDC_BN_ABOUT, &CDemoHaarWaveletDlg::OnBnClickedBnAbout)
+	ON_BN_CLICKED(IDC_BTNAUTO, &CDemoHaarWaveletDlg::OnBnClickedBtnauto)
 END_MESSAGE_MAP()
 
 
@@ -106,7 +111,7 @@ BOOL CDemoHaarWaveletDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// Set small icon
 
 	// TODO: Add extra initialization here
-	m_iterations.SetWindowTextA("1");
+	m_iterations.SetWindowTextW(L"1");
 
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
@@ -162,14 +167,14 @@ HCURSOR CDemoHaarWaveletDlg::OnQueryDragIcon()
 
 void CDemoHaarWaveletDlg::OnBnClickedBnForward()
 {
-	CString filePath = "";
-	m_imagePath.GetWindowTextA(filePath);
+	CString filePath = L"";
+	m_imagePath.GetWindowTextW(filePath);
 
-	CString iteration = "";
-	m_iterations.GetWindowTextA(iteration);
+	CString iteration = L"";
+	m_iterations.GetWindowTextW(iteration);
 
 	CHaarWavelet a;
-	a.RunHaarTransform(filePath, atoi(iteration.GetString()));
+	a.RunHaarTransform(filePath, _wtoi(iteration.GetString()));
 }
 
 
@@ -195,8 +200,8 @@ void CDemoHaarWaveletDlg::OnBnClickedBnOpenFile()
 void CDemoHaarWaveletDlg::OnBnClickedBnDenoising()
 {
 	// TODO: Add your control notification handler code here
-	CString filePath = "";
-	m_imagePath.GetWindowTextA(filePath);
+	CString filePath = L"";
+	m_imagePath.GetWindowTextW(filePath);
 
 	CHaarWavelet a;
 	a.Denoise(filePath);
@@ -205,6 +210,91 @@ void CDemoHaarWaveletDlg::OnBnClickedBnDenoising()
 
 void CDemoHaarWaveletDlg::OnBnClickedBnAbout()
 {
-	char tmp[512] = "Group 9 - Image Processing & Computer Vision\n\tUniversity of Science - 2014";
-	MessageBox(tmp, "About us", 0);
+	wchar_t tmp[512] = L"Group 9 - Image Processing & Computer Vision\n\tUniversity of Science - 2014";
+	MessageBox(tmp, L"About us", 0);
+}
+
+
+static CStringArray staticFilePaths;
+static CString staticOutputFolder;
+
+UINT ThreadAutoTransformMode(void* inData)
+{
+	CHaarWavelet haarWavelet;
+	haarWavelet.RunHaarTransformAutoMode(staticFilePaths, staticOutputFolder);
+	MessageBox(NULL, L"This progress is finished. Please check the result.csv file in output folder.", L"Information", MB_OK);
+	sHaarWaveletDlg->m_progressBar.SetMarquee(FALSE, 1);
+	sHaarWaveletDlg->m_progressBar.SetPos(0);
+
+	// Enable dialog controls
+	CWnd* Pfield = sHaarWaveletDlg->GetDlgItem( IDC_BN_FORWARD );
+	Pfield->EnableWindow(TRUE); 
+	Pfield = sHaarWaveletDlg->GetDlgItem( IDC_BN_OPEN_FILE );
+	Pfield->EnableWindow(TRUE);
+	Pfield = sHaarWaveletDlg->GetDlgItem( IDC_BN_DENOISING );
+	Pfield->EnableWindow(TRUE); 
+	Pfield = sHaarWaveletDlg->GetDlgItem( IDC_BTNAUTO );
+	Pfield->EnableWindow(TRUE); 
+	return 0;
+}
+
+void CDemoHaarWaveletDlg::OnBnClickedBtnauto()
+{
+	// TODO: Add your control notification handler code here
+	// Show Open File Dialog
+	TCHAR szFilters[]= _T("txt Files (*.txt)|*.txt||");
+	// Create an Open dialog
+	CFileDialog fileDlg (TRUE, _T("txt Files"), _T("*.txt"),
+		OFN_FILEMUSTEXIST| OFN_HIDEREADONLY, szFilters, this);
+
+	// Display the file dialog. When user clicks OK, fileDlg.DoModal()
+	// returns IDOK.
+	if (fileDlg.DoModal() == IDOK)
+	{
+		// Get path of the selected file.
+		CString filePath = fileDlg.GetPathName();
+
+		staticFilePaths.RemoveAll();
+
+		// Parse input file
+		TRY {
+			CStdioFile file(filePath, CFile::modeRead); 
+
+			CString strLine = L"";
+			while (file.ReadString(strLine)) {
+				staticFilePaths.Add(strLine);
+			}
+
+			file.Close();
+
+			// Browser output folder
+			CFolderPickerDialog folderPicker;
+			if (folderPicker.DoModal() == IDOK) {
+				MessageBox(L"Press OK to start.", L"Information", MB_OK);
+
+				staticOutputFolder = folderPicker.GetFolderPath();
+
+				m_progressBar.SetRange(0, 1);
+				m_progressBar.SetForegroundWindow();
+				m_progressBar.SetMarquee(TRUE, 1);
+
+				// Disable dialog item
+				CWnd* Pfield = GetDlgItem( IDC_BN_FORWARD );
+				Pfield->EnableWindow(FALSE); 
+				Pfield = GetDlgItem( IDC_BN_OPEN_FILE );
+				Pfield->EnableWindow(FALSE);
+				Pfield = GetDlgItem( IDC_BN_DENOISING );
+				Pfield->EnableWindow(FALSE); 
+				Pfield = GetDlgItem( IDC_BTNAUTO );
+				Pfield->EnableWindow(FALSE); 
+
+				AfxBeginThread(ThreadAutoTransformMode, NULL);
+				
+			}
+		}
+		CATCH_ALL (ex) {
+			ex->ReportError();
+		}
+		END_CATCH_ALL
+	}
 }

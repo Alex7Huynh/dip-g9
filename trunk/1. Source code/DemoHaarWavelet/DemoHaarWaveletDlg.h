@@ -4,6 +4,7 @@
 
 #pragma once
 #include "afxwin.h"
+#include "afxcmn.h"
 
 
 // CDemoHaarWaveletDlg dialog
@@ -37,4 +38,6 @@ public:
 	CEdit m_iterations;
 	afx_msg void OnBnClickedBnDenoising();
 	afx_msg void OnBnClickedBnAbout();
+	afx_msg void OnBnClickedBtnauto();
+	CProgressCtrl m_progressBar;
 };
