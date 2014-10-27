@@ -1,0 +1,21 @@
+﻿Bài nộp bao gồm 8 thư mục đánh số 1-8 và 2 tập tin phim demo.
+Tập tin này ghi lại những thay đổi chính so với phiên bản CD nộp vào buổi thi lý thuyết.
+
+A. Thêm chức năng "Auto Transform". Các tập tin đã sửa:
+	1. Source code: do bổ sung chức năng
+	2. Program: ảnh hưởng file exe.
+	3. Data: bổ sung file AutoMode.txt.
+	4. Help: hướng dẫn thêm chức năng này.
+	5. Doc: bổ sung thống kê cho chức năng này.
+	8. Group-Information: cập nhật lại bảng phân công do đã hoàn thành.
+	Video demo 2: phim demo bổ sung.
+B. Chỉnh sửa slide sau seminar theo các góp ý của thầy. Tập tin đã sửa:
+	6. PPT
+		a. Chuyển đổi thứ tự slide cho logic hơn.
+		b. Chỉnh sửa hình Haar Wavelet.
+		c. Thêm hình demo ứng dụng.
+		d. Thêm công thức wavelet xử lý trên ảnh (x,y).
+		e. Làm rõ hơn về phân tích đa phân giải (MRA)
+		f. Làm rõ hơn về JPEG vs. JPEG 2000
+C. Bổ sung 3 tài liệu tham khảo do ghi thiếu từ kỳ trước
+	7. References/Tiếng Anh

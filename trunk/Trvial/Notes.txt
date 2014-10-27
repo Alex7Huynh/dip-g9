@@ -1,0 +1,53 @@
+﻿Seminar: ai làm phần nào thì lên trình bày phần đó.
+Kinh nghiệm:
+- Đọc kỹ yêu cầu
+- Phân tích nội dung -> Bảng phân công (nộp vào 05/09)
+- Xác định keywords của đề án -> Tìm tài liệu + PhD Thesis
+- Lên kế hoạch cụ thể -> Schedule time
+- Tổng hợp kết quả -> Viết báo cáo: Report (Why) + Slide (What)
+Tìm kiếm nguồn tham khảo
+- Wikipedia (nắm ý chính), xem phần reference
+- Tìm các bài Overview
+- Source code: sourceforge
+- Sách Digital Image Processing
+- PCL: Point Cloud Library
+Dataset
+- Specific data set: không khuyến khích, nếu dùng thì nên kèm theo tiêu chí rõ ràng.
+- Standard data set: khuyến khích.
+
+
+Ghi chú:
+- Khi viết báo cáo nhớ ghi rõ tài liệu tham khảo.
+- Trước khi up tài liệu lên nhớ đọc sơ qua và đổi tên file.
+- Khi up mã nguồn nhớ ghi lại link đã download trong +Link.txt.
+- Trong quá trình làm có gặp bế tắc vui lòng:
+	+ liên hệ nhóm trưởng để trao đổi
+	+ lên group Skype thảo luận
+	+ tránh để đến cuối kỳ không hoàn thành được
+
+
+Nhận xét của thầy trong buổi đầu với các nhóm:
+1. Cần phát biểu bài toán cùng với giải pháp.
+2. Thống kê các phương pháp.
+3. Cách tạo nhiễu như thế nào, dùng hàm thư viện nào?
+4. Chú trọng vào giải thuật và ứng dụng, cài đặt như thế nào? test thế nào?
+5. Ghi lại định nghĩa cơ bản.
+6. Ví dụ về ứng dụng cần đến đề tài.
+7. Tại sao lại dùng hàm (sigmoid)? Vì sao không dùng hàm khác?
+8. Nhấn mạnh vào điểm mạnh, hữu ích, output ra là gì, đem lại hiệu quả gì? triển vọng?
+9. Khi nào dùng cái cũ (Fourier), khi nào dùng cái mới (wavelet)?
+10. Hạn chế của phương pháp (wavelet)?
+11. Cho ví dụ cụ thể của từng phương pháp trình bày.
+
+
+Phân công sơ lược:
+I. Giới thiệu [Toàn]
+II. Wavelet trên ảnh màu RGB
+1. Biến đổi wavelet rời rạc [ĐMinh]
+2. Biến đổi wavelet liên tục [ĐMinh]
+3. Biến đổi wavelet phức [QMinh]
+4. Biến đổi wavelet nhanh [QMinh]
+VI. Viết ứng dụng wavelet (C++, MatLab,...) [Long+Tấn]
+- Tìm dữ liệu, thư viện hỗ trợ
+- Nén ảnh
+- Khử nhiễu
